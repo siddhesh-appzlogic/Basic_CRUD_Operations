@@ -10,22 +10,31 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
+import environ
+import os
 from pathlib import Path
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
+env = environ.Env(
+    DEBUG = (bool, False)
+)
+
+environ.Env.read_env(os.path.join(BASE_DIR,'.env'))
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-tc$)5g^l-f!4j&txpyt6+gm9b8$zkqq6(rlc9%)puat3b#zqnd'
+SECRET_KEY = env("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env("DEBUG")
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = env.list("ALLOWED_HOSTS",default=[])
 
 
 # Application definition
@@ -77,11 +86,11 @@ WSGI_APPLICATION = 'books_data.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'django_db',
-        'USER' : 'root',
-        'PASSWORD':'SID@1wal$6',
-        'HOST': '127.0.0.1',
-        'PORT' : '3306',
+        'NAME': env("DB_NAME"),
+        'USER' : env("DB_USER"),
+        'PASSWORD':env("DB_PASSWORD"),
+        'HOST': env("DB_HOST"),
+        'PORT' : env("DB_PORT"),
         'OPTIONS' : {
             'init_command':"SET sql_mode = 'STRICT_TRANS_TABLES'"
         }
